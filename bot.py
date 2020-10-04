@@ -479,5 +479,4 @@ def checkGroupStatus():
         time.sleep(3600) # check each hour
 
 telepot.loop.MessageLoop(bot,handle).run_as_thread()
-while 1:
-    time.sleep(60)
+checkGroupStatus()
