@@ -184,7 +184,10 @@ def handle(msg):
             groupName=d[1]
             if not groupName.startswith("@"):
                 groupName="@"+groupName
-
+            if not groupName.isalnum():
+                bot.sendMessage(userid,"Invalid group name! Group name can only contain alphabets and numbers.")
+                return
+                
             cur.execute(f"SELECT * FROM groupInfo WHERE groupname='{groupName.lower()}'")
             d=cur.fetchall()
             inactive=0
@@ -237,6 +240,9 @@ def handle(msg):
             groupName=d[1]
             if not groupName.startswith("@"):
                 groupName="@"+groupName
+            if not groupName.isalnum():
+                bot.sendMessage(userid,"Invalid group name! Group name can only contain alphabets and numbers.")
+                return
 
             cur.execute(f"SELECT * FROM groupInfo WHERE groupName='{groupName.lower()}'")
             dd=cur.fetchall()
@@ -277,6 +283,9 @@ def handle(msg):
             groupName=d[1]
             if not groupName.startswith("@"):
                 groupName="@"+groupName
+            if not groupName.isalnum():
+                bot.sendMessage(userid,"Invalid group name! Group name can only contain alphabets and numbers.")
+                return
 
             cur.execute(f"SELECT * FROM groupInfo WHERE groupName='{groupName.lower()}'")
             dd=cur.fetchall()
@@ -323,6 +332,9 @@ def handle(msg):
             groupName=d[1]
             if not groupName.startswith("@"):
                 groupName="@"+groupName
+            if not groupName.isalnum():
+                bot.sendMessage(userid,"Invalid group name! Group name can only contain alphabets and numbers.")
+                return
                 
             cur.execute(f"SELECT * FROM groupInfo WHERE groupName='{groupName.lower()}'")
             dd=cur.fetchall()
@@ -364,6 +376,9 @@ def handle(msg):
             groupName=d[1]
             if not groupName.startswith("@"):
                 groupName="@"+groupName
+            if not groupName.isalnum():
+                bot.sendMessage(userid,"Invalid group name! Group name can only contain alphabets and numbers.")
+                return
                 
             cur.execute(f"SELECT * FROM groupInfo WHERE groupName='{groupName.lower()}'")
             dd=cur.fetchall()
@@ -404,6 +419,9 @@ def handle(msg):
             groupName=d[1]
             if not groupName.startswith("@"):
                 groupName="@"+groupName
+            if not groupName.isalnum():
+                bot.sendMessage(userid,"Invalid group name! Group name can only contain alphabets and numbers.")
+                return
                 
             cur.execute(f"SELECT * FROM groupInfo WHERE groupName='{groupName.lower()}'")
             dd=cur.fetchall()
@@ -442,6 +460,8 @@ def handle(msg):
         cur.execute(f"SELECT * FROM groupInfo WHERE groupName='{groupName}'")
         d=cur.fetchall()
         if len(d)==0:
+            return
+        if d[0][2]==0:
             return
         for photo in msg["photo"]:
             ocr=OCR(photo["file_id"]).lower()
