@@ -17,8 +17,11 @@ You can add the bot to your groups and set banned phrases for each group here.
 The bot must be an admin in order to remove messages!
 
 
+<hr />
 
 Commands usage:
+
+<hr />
 
 <code>/bindgroup,/bg {group name}</code>
 
@@ -30,7 +33,7 @@ Commands usage:
 
 --This will bind @BotDevelopment with the bot and the bot will detect pictures in the group.
 
-
+<hr />
 
 <code>/unbindgroup,/ubg {group name}</code>
 
@@ -42,7 +45,7 @@ Commands usage:
 
 --This will unbind @BotDevelopment from the bot.
 
-
+<hr />
 
 <code>/banphrase,/bp {group name} {banned phrase}</code>
 
@@ -56,7 +59,7 @@ Commands usage:
 
 --This will remove <i>bitcoin, Bitcoin, BitCoin</i> etc appeared in pictures in @BotDevelopment
 
-
+<hr />
 
 <code>/seebp {group name}</code>
 
@@ -70,7 +73,7 @@ Commands usage:
 
 --The bot will show all banned phrases of @BotDevelopment
 
-
+<hr />
 
 <code>/delbp {group name} {banned phrase}</code>
 
@@ -84,7 +87,7 @@ Commands usage:
 
 --This command will make phrase 'bitcoin' will be no longer banned for @BotDevelopment
 
-
+<hr />
 
 <code>/delallbp {group name}</code>
 
@@ -98,7 +101,7 @@ Commands usage:
 
 --This command will delete all banned phrases of @BotDevelopment
 
-
+<hr />
 
 Buy me a cup of coffee (Donate) (Only accept cryptocurrency):
 
