@@ -1,0 +1,3 @@
+DelBanPicBot.py
+# This file contains bot token so it is not uploaded to GitHub
+# However, bot.py contains all functions without bot token so it's open sourced
