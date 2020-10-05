@@ -127,7 +127,7 @@ if db_not_exist:
     cur.execute(f"CREATE TABLE bannedPhrase (adder INT, groupname VARCHAR(64), phrase VARCHAR(128))")
     conn.commit()
 
-BOT_TOKEN="{TOKEN}"
+BOT_TOKEN="{BOT TOKEN}"
 BOT_ID=1351756140
 bot=telepot.Bot(BOT_TOKEN)
 pytesseract.pytesseract.tesseract_cmd='tesseract'
@@ -172,6 +172,7 @@ def handle(msg):
     text=''
     if 'text' in msg.keys():
         text=msg["text"]
+        
     if msg["chat"]["type"]=="private":
         if text.startswith("/start"):
             bot.sendMessage(userid,HELLO,parse_mode="html")
@@ -313,7 +314,7 @@ def handle(msg):
                 bot.sendMessage(userid,f"Phrase too long! The phrase must be less than 128 characters in length!")
                 return
             
-            cur.execute(f"SELECT * FROM bannedPhrase WHERE phrase='{d[2].lower()}'")
+            cur.execute(f"SELECT * FROM bannedPhrase WHERE phrase='{d[2].lower()}' AND groupName='{groupName}''")
             dd=cur.fetchall()
             if len(dd)>0:
                 bot.sendMessage(userid,f"The phrase is already banned for {groupName}!")
@@ -363,7 +364,7 @@ def handle(msg):
             if len(d)==0:
                 bot.sendMessage(userid,f"There is no banned phrases for {groupName} yet!",parse_mode="html")
                 return
-            msg=f"Here are ll banned phrases for {groupName}:\n"
+            msg=f"Here are all banned phrases for {groupName}:\n"
             for dd in d:
                 msg+=f"<code>{dd[0]}</code>\n"
             bot.sendMessage(userid,msg,parse_mode="html")
