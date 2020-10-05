@@ -464,11 +464,11 @@ def handle(msg):
         if d[0][2]==0:
             return
         for photo in msg["photo"]:
-            ocr=OCR(photo["file_id"]).lower()
+            ocr=OCR(photo["file_id"]).lower().replace("\n"," ")
             cur.execute(f"SELECT phrase FROM bannedPhrase WHERE groupname='{groupName}'")
             d=cur.fetchall()
             for dd in d:
-                if kmp.search(ocr,dd[0].replace(" ","").replace("\n",""))!=[]:
+                if kmp.search(ocr,dd[0])!=[]:
                     bot.deleteMessage(telepot.message_identifier(msg))
                     bot.sendMessage(msg["chat"]["id"],f"A message containing picture from <b>{fromusr}</b> is removed!\nReason: <i>Picture contain banned phrase: {dd[0]}</i>",parse_mode="html")
                     break
