@@ -127,7 +127,7 @@ if db_not_exist:
     cur.execute(f"CREATE TABLE bannedPhrase (adder INT, groupname VARCHAR(64), phrase VARCHAR(128))")
     conn.commit()
 
-BOT_TOKEN="{BOT TOKEN}"
+BOT_TOKEN="{TOKEN}"
 BOT_ID=1351756140
 bot=telepot.Bot(BOT_TOKEN)
 pytesseract.pytesseract.tesseract_cmd='tesseract'
@@ -184,7 +184,7 @@ def handle(msg):
             groupName=d[1]
             if not groupName.startswith("@"):
                 groupName="@"+groupName
-            if not groupName.isalnum():
+            if not groupName[1:].isalnum():
                 bot.sendMessage(userid,"Invalid group name! Group name can only contain alphabets and numbers.")
                 return
                 
@@ -240,7 +240,7 @@ def handle(msg):
             groupName=d[1]
             if not groupName.startswith("@"):
                 groupName="@"+groupName
-            if not groupName.isalnum():
+            if not groupName[1:].isalnum():
                 bot.sendMessage(userid,"Invalid group name! Group name can only contain alphabets and numbers.")
                 return
 
@@ -250,7 +250,7 @@ def handle(msg):
                 bot.sendMessage(userid,f"{groupName} is not binded to the bot yet!\nUse <code>/bindgroup {groupName}</code> to bind it!",parse_mode="html")
                 return
             if dd[0][2]==0:
-                bot.sendMessage(userid,f"{groupName} is not active!\n/bindgroup command is disabled!")
+                bot.sendMessage(userid,f"{groupName} is not active!\n/unbindgroup command is disabled!")
                 return
             if dd[0][0]!=userid:
                 chat=None
@@ -283,7 +283,7 @@ def handle(msg):
             groupName=d[1]
             if not groupName.startswith("@"):
                 groupName="@"+groupName
-            if not groupName.isalnum():
+            if not groupName[1:].isalnum():
                 bot.sendMessage(userid,"Invalid group name! Group name can only contain alphabets and numbers.")
                 return
 
@@ -293,7 +293,7 @@ def handle(msg):
                 bot.sendMessage(userid,f"{groupName} is not binded to the bot yet!\nUse <code>/bindgroup {groupName}</code> to bind it!",parse_mode="html")
                 return
             if dd[0][2]==0:
-                bot.sendMessage(userid,f"{groupName} is not active!\n/bindgroup command is disabled!")
+                bot.sendMessage(userid,f"{groupName} is not active!\n/banphrase command is disabled!")
                 return
             if dd[0][0]!=userid:
                 chat=None
@@ -332,7 +332,7 @@ def handle(msg):
             groupName=d[1]
             if not groupName.startswith("@"):
                 groupName="@"+groupName
-            if not groupName.isalnum():
+            if not groupName[1:].isalnum():
                 bot.sendMessage(userid,"Invalid group name! Group name can only contain alphabets and numbers.")
                 return
                 
@@ -342,7 +342,7 @@ def handle(msg):
                 bot.sendMessage(userid,f"{groupName} is not binded to the bot yet!\nUse <code>/bindgroup {groupName}</code> to bind it!",parse_mode="html")
                 return
             if dd[0][2]==0:
-                bot.sendMessage(userid,f"{groupName} is not active!\n/bindgroup command is disabled!")
+                bot.sendMessage(userid,f"{groupName} is not active!\n/seebp command is disabled!")
                 return
             if dd[0][0]!=userid:
                 chat=None
@@ -376,7 +376,7 @@ def handle(msg):
             groupName=d[1]
             if not groupName.startswith("@"):
                 groupName="@"+groupName
-            if not groupName.isalnum():
+            if not groupName[1:].isalnum():
                 bot.sendMessage(userid,"Invalid group name! Group name can only contain alphabets and numbers.")
                 return
                 
@@ -386,7 +386,7 @@ def handle(msg):
                 bot.sendMessage(userid,f"{groupName} is not binded to the bot yet!\nUse <code>/bindgroup {groupName}</code> to bind it!",parse_mode="html")
                 return
             if dd[0][2]==0:
-                bot.sendMessage(userid,f"{groupName} is not active!\n/bindgroup command is disabled!")
+                bot.sendMessage(userid,f"{groupName} is not active!\n/delbp command is disabled!")
                 return
             if dd[0][0]!=userid:
                 chat=None
@@ -419,7 +419,7 @@ def handle(msg):
             groupName=d[1]
             if not groupName.startswith("@"):
                 groupName="@"+groupName
-            if not groupName.isalnum():
+            if not groupName[1:].isalnum():
                 bot.sendMessage(userid,"Invalid group name! Group name can only contain alphabets and numbers.")
                 return
                 
@@ -429,7 +429,7 @@ def handle(msg):
                 bot.sendMessage(userid,f"{groupName} is not binded to the bot yet!\nUse <code>/bindgroup {groupName}</code> to bind it!",parse_mode="html")
                 return
             if dd[0][2]==0:
-                bot.sendMessage(userid,f"{groupName} is not active!\n/bindgroup command is disabled!")
+                bot.sendMessage(userid,f"{groupName} is not active!\n/delallbp command is disabled!")
                 return
             if dd[0][0]!=userid:
                 chat=None
@@ -476,6 +476,7 @@ def handle(msg):
     pprint.pprint(msg)
 
 def checkGroupStatus():
+    cur=conn.cursor()
     while 1:
         cur.execute(f"SELECT * FROM groupInfo WHERE active=1")
         groups=cur.fetchall()
@@ -486,12 +487,18 @@ def checkGroupStatus():
                 chat=bot.getChatMember(group[1],BOT_ID)
             except:
                 inactive=1
-                bot.sendMessage(group[0],f"It looks like the bot is no longer admin in (or kicked from) {group[1]} or the group is removed!\nThe group is set inactive and the bot will no longer work for it.\nYou have to run /bindgroup again to reactive.")
-            if not chat["status"] in ("creator","administrator"):
+                try:
+                    bot.sendMessage(group[0],f"It looks like the bot is no longer admin in (or kicked from) {group[1]} or the group is removed!\nThe group is set inactive and the bot will no longer work for it.\nYou have to run /bindgroup again to reactive.")
+                except:
+                    pass
+            if not chat is None and not chat["status"] in ("creator","administrator"):
                 inactive=1
-                bot.sendMessage(group[0],f"It looks like the bot is no longer admin in (or kicked from) {group[1]} or the group is removed!\nThe group is set inactive and the bot will no longer work for it.\nYou have to run /bindgroup again to reactive.")
+                try:
+                    bot.sendMessage(group[0],f"It looks like the bot is no longer admin in (or kicked from) {group[1]} or the group is removed!\nThe group is set inactive and the bot will no longer work for it.\nYou have to run /bindgroup again to reactive.")
+                except:
+                    pass
             if inactive:
-                cur.execute(f"UPDATE groupInto SET active=0 WHERE groupName='{group[1]}'")
+                cur.execute(f"UPDATE groupInfo SET active=0 WHERE groupName='{group[1]}'")
                 conn.commit()
                 time.sleep(0.3)
             else:
