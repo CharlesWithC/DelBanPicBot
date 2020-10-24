@@ -314,7 +314,7 @@ def handle(msg):
                 bot.sendMessage(userid,f"Phrase too long! The phrase must be less than 128 characters in length!")
                 return
             
-            cur.execute(f"SELECT * FROM bannedPhrase WHERE phrase='{d[2].lower()}' AND groupName='{groupName}''")
+            cur.execute(f"SELECT * FROM bannedPhrase WHERE phrase='{d[2].lower()}' AND groupName='{groupName}'")
             dd=cur.fetchall()
             if len(dd)>0:
                 bot.sendMessage(userid,f"The phrase is already banned for {groupName}!")
