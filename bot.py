@@ -127,7 +127,7 @@ if db_not_exist:
     cur.execute(f"CREATE TABLE bannedPhrase (adder INT, groupname VARCHAR(64), phrase VARCHAR(128))")
     conn.commit()
 
-BOT_TOKEN="{BOT TOKEN}"
+BOT_TOKEN="1351756140:{BOT_TOKEN}"
 BOT_ID=1351756140
 bot=telepot.Bot(BOT_TOKEN)
 pytesseract.pytesseract.tesseract_cmd='tesseract'
@@ -476,34 +476,50 @@ def handle(msg):
 
     pprint.pprint(msg)
 
+grouptag={}
 def checkGroupStatus():
     cur=conn.cursor()
     while 1:
         cur.execute(f"SELECT * FROM groupInfo WHERE active=1")
         groups=cur.fetchall()
-        for group in groups:
-            chat=None
-            inactive=0
-            try:
-                chat=bot.getChatMember(group[1],BOT_ID)
-            except:
-                inactive=1
-                try:
-                    bot.sendMessage(group[0],f"It looks like the bot is no longer admin in (or kicked from) {group[1]} or the group is removed!\nThe group is set inactive and the bot will no longer work for it.\nYou have to run /bindgroup again to reactive.")
-                except:
-                    pass
-            if not chat is None and not chat["status"] in ("creator","administrator"):
-                inactive=1
-                try:
-                    bot.sendMessage(group[0],f"It looks like the bot is no longer admin in (or kicked from) {group[1]} or the group is removed!\nThe group is set inactive and the bot will no longer work for it.\nYou have to run /bindgroup again to reactive.")
-                except:
-                    pass
-            if inactive:
-                cur.execute(f"UPDATE groupInfo SET active=0 WHERE groupName='{group[1]}'")
-                conn.commit()
-                time.sleep(0.3)
-            else:
-                time.sleep(0.1)
+        for limit in range(24,0):
+            for group in groups:
+                # enum groups from the one with highest possibility of being deactived to the one with lowest possibility 
+                if (limit==0 and not group[1] in grouptag.keys()) or (limit>0 and group[1] in grouptag.keys() and grouptag[group[1]]==limit):
+                    inactive=0
+                    try:
+                        chat=bot.getChatMember(group[1],BOT_ID)
+                        if not chat["status"] in ("creator","administrator"):
+                            # group exists and bot is in group, but bot isn't admin
+                            if limit>0:
+                                del grouptag[group[1]]
+                            inactive=1
+                            try:
+                                bot.sendMessage(group[0],f"It looks like the bot is no longer admin in (or kicked from) {group[1]} or the group is removed!\nThe group is set inactive and the bot will no longer work for it.\nYou have to run /bindgroup again to reactive.")
+                            except:
+                                pass
+                            
+                    except:
+                        # bot is kicked / group removed
+                        if not group[1] in grouptag.keys():
+                            grouptag[group[1]]=0
+                        grouptag[group[1]]+=1
+
+                        if grouptag[group[1]]==25:# 24 hour range
+                            del grouptag[group[1]]
+                            inactive=1
+                            try:
+                                bot.sendMessage(group[0],f"It looks like the bot is no longer admin in (or kicked from) {group[1]} or the group is removed!\nThe group is set inactive and the bot will no longer work for it.\nYou have to run /bindgroup again to reactive.")
+                            except:
+                                pass
+                    
+                    if inactive:
+                        cur.execute(f"UPDATE groupInfo SET active=0 WHERE groupName='{group[1]}'")
+                        conn.commit()
+                        time.sleep(0.3)
+                    else:
+                        time.sleep(0.1)
+
         time.sleep(3600) # check each hour
 
 telepot.loop.MessageLoop(bot,handle).run_as_thread()
